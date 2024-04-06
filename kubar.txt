@@ -1,0 +1,90 @@
+clusters  is group of nodes.
+
+
+3 work node   1master node
+
+
+different components of kubernetes 
+1.Api Server
+2.Container Run Time
+3.Schedule
+4.Kube controller
+5.Kube proxy
+6.Kubelet
+7.ETCD
+
+
+what is pod
+A single instance of running process in  a clusters.it can run one more containers and share the same resources.
+
+clusters is a group of node.
+containers based application run in the pod. 
+
+
+
+components of master kubernetes
+
+.Api Server
+.Schedular
+.ETCD
+.Control manager
+
+
+minikube start --driver=docker
+minikube stop
+minikube dashboard
+
+kubectl create deployment my-nginx --image=nginx
+kubectl get deployment
+kubectl get pods
+kubectl delete deployment my-nginx
+kubectl expose deployment my-nginx --port=80 --type=LoadBalancer
+kubectl get services 
+minikube service my-nginx
+kubectl logs my-nginx
+kubectl describe pods
+
+kubectl set image deployment my-nginx container-name=new-image-name
+kubectl rollout status deployment my-nginx
+kubectl rollout undo deployment my-nginx
+
+kubectl scale deployment node-app --replicas=4
+
+kubectl apply -f  file-name
+
+kubectl delete -f file-name
+
+
+There are two ways to run application with multiple containers-
+
+.Run multiple container in same pod.
+.Run each container in separate mode.
+
+
+
+kubectl get all
+
+
+kubectl get sc
+
+kubectl create secret generic my-secret --from-literal=key1=value1 --from-literal=key2=value2
+
+kubectl get secret my-secret -o yaml
+kubectl describe secret my-secret
+
+
+
+
+
+
+chatgpt minikube
+
+minikube start
+minikube stop
+minikube delete
+minikube status
+minikube ip
+minikube ssh
+minikube addons enable <addon-name>
+minikube addons disable <addon-name>
+minikube addons list

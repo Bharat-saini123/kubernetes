@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: node-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+      - name: node-app-container
+        image: bharatsaini1237890/back-kubar:01
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - secretRef:
+            name: saini-secret
+      volumes:
+        - name:  mongo-volume
+          persistentVolumeClaim:  
+            claimName: my-pvc
+        
+        
+      
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-db-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: node-db-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: node-db-app
+    spec:
+      containers:
+      - name: mongodb-container
+        image: mongo:latest
+        volumeMounts:
+          - name:  mongo-volume
+            mountPath:  /data/db
+        ports:
+        - containerPort: 27017
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        
+        envFrom:
+        - secretRef:
+            name: saini-secret
+      volumes:
+        - name:  mongo-volume
+          persistentVolumeClaim:  
+            claimName: my-pvc
+            
+            
+
+
+---
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  name:  node-service
+spec:
+  selector:
+    app:  node-app
+  type:  LoadBalancer 
+  ports:
+  - name:  node-port
+    port:  80
+    targetPort:  5000
+  
+
+
+
+
+
+
+
+
+
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  mongodb-service
+spec:
+  selector:
+    app:  node-db-app
+  type:  LoadBalancer
+  ports:
+  - name:  mongo-db-port
+    port:  27017
+    targetPort:  27017
+
+
+
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: saini-secret
+type: Opaque
+data:
+  PORT: NTAwMA==  
+  MONGO_DB: bW9uZ29kYjovL21vbmdvZGItc2VydmljZToyNzAxNy9rdWJhcg==
+    
+
+
+
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path:  /data/
+    type: DirectoryOrCreate
+
+
+
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  volumeName: my-pv
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

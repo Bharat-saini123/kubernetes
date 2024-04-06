@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+    - name: mycontainer
+      image: myimage
+      env:
+        - name: ENV_VAR_NAME
+          value: "value_of_variable"
+
+
+
+
+
+
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+    - name: mycontainer
+      image: myimage
+      envFrom:
+        - configMapRef:
+            name: my-config
+
+
+
+
+
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+    - name: mycontainer
+      image: myimage
+      envFrom:
+        - secretRef:
+            name: my-secret
+
+
+
+
+
+
+containers:
+  - name: mycontainer
+    image: myimage
+    env:
+      - name: ENV_VAR_NAME
+        value: "value_of_variable"
+
+
+
+
+
+
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-deployment
+spec:
+  selector:
+    matchLabels:
+      app: node-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+        - name: node-container
+          image: bharatsaini1237890/compose-kube:02
+          env:
+            - name: ENV_VAR
+              valueFrom:
+                secretKeyRef:
+                  name: IMAGE  # Name of the Secret
+                  key: key_name_inside_secret  # Key within the Secret that contains the value for ENV_VAR
